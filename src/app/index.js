@@ -1,6 +1,7 @@
-import myclass from './myclass'
+import "babel-polyfill"
 import '../style/app.scss'
-
-let test = new myclass()
-
-console.log(test.msg)
+import Masking from './masking'
+new Masking({
+    el: "#mask",
+    rules: [3, 4, 2, 4]
+})
