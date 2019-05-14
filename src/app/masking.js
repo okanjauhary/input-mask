@@ -1,6 +1,8 @@
 const Masking = (() => {
     const is_number = inp => /\d/.test(inp)
 
+    const clear = inp => inp.replace(/[a-z]|\W/gi, "")
+
     class MaskingClass {
         constructor(data){
             this.selector = data.el
@@ -35,19 +37,18 @@ const Masking = (() => {
             let input = this.el.querySelectorAll('.msj-input-mask__content')
             for(let i=0; i < input.length; i++){
                 input[i].addEventListener('keyup', e => {
-                    let val = e.target.value
-                    if(is_number(val.slice(-1))){
-                        if(/* checking length of value */ val.length > this.rules[i]){
-                            e.target.value = val.slice(0, -1)
-                            if(/* checking not last input */ i < input.length-1){
-                                input[i+1].removeAttribute('disabled')
-                                input[i+1].focus()
-                                if(input[i+1].value.length < this.rules[i+1]){
-                                    input[i+1].value += val.slice(-1)
-                                }
+                    console.log(e)
+                    let val = clear(e.target.value)
+                    if(/* checking length of value */ val.length > this.rules[i]){
+                        e.target.value = val.slice(0, this.rules[i])
+                        if(/* checking not last input */ i < input.length-1){
+                            input[i+1].removeAttribute('disabled')
+                            input[i+1].focus()
+                            if(input[i+1].value.length < this.rules[i+1]){
+                                input[i+1].value += val.slice(-1)
                             }
                         }
-                    }else e.target.value = val.slice(0, -1)
+                    }else e.target.value = val
                 })
             }
         }   
