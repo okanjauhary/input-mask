@@ -1,6 +1,4 @@
 const Masking = (() => {
-    const is_number = inp => /\d/.test(inp)
-
     const clear = inp => inp.replace(/[a-z]|\W/gi, "")
 
     class MaskingClass {
@@ -37,21 +35,33 @@ const Masking = (() => {
             let input = this.el.querySelectorAll('.msj-input-mask__content')
             for(let i=0; i < input.length; i++){
                 input[i].addEventListener('keyup', e => {
-                    console.log(e)
                     let val = clear(e.target.value)
-                    if(/* checking length of value */ val.length > this.rules[i]){
-                        e.target.value = val.slice(0, this.rules[i])
-                        if(/* checking not last input */ i < input.length-1){
-                            input[i+1].removeAttribute('disabled')
-                            input[i+1].focus()
-                            if(input[i+1].value.length < this.rules[i+1]){
-                                input[i+1].value += val.slice(-1)
+                    if(/* backspace */e.keyCode == 8 ){
+                        this.whenDelete(input, val, i)
+                    }else{
+                        if(/* checking length of value */ val.length > this.rules[i]){
+                            e.target.value = val.slice(0, this.rules[i])
+                            if(/* checking not last input */ i < input.length-1){
+                                input[i+1].removeAttribute('disabled')
+                                input[i+1].focus()
+                                if(input[i+1].value.length < this.rules[i+1]){
+                                    input[i+1].value += val.slice(-1)
+                                }
                             }
-                        }
-                    }else e.target.value = val
+                        }else e.target.value = val
+                    }
                 })
             }
-        }   
+        }
+
+        whenDelete(input, val, index){
+            if(/* checking loping not first */index != 0){
+                if(/* checking length is empty */ !val.length){
+                    input[index-1].focus()
+                    input[index].setAttribute('disabled', true)
+                }
+            }
+        }
     }
 
     return MaskingClass
