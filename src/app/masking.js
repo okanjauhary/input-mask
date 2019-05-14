@@ -37,6 +37,7 @@ const Masking = (() => {
                 for(let i=0; i < this.rules.length; i++){
                     let child = document.createElement('input')
                     child.setAttribute('class', `msj-input-mask__item input-mask-${i+1}--${this.rules[i]}`)
+                    child.style.width = (this.rules[i]*10) + 30 + 'px'
                     if(i > 0) this.disabledElement(child)
                     else this.enableElement(child)
                     this.el.appendChild(child)
