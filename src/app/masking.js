@@ -5,6 +5,7 @@ const Masking = (() => {
         constructor(data){
             this.selector = data.el
             this.rules = data.rules
+            this.value = ""
             this.initElement()
             this.initChildElement()
         }
@@ -70,6 +71,7 @@ const Masking = (() => {
                         }
                     }else e.target.value = val
                 }
+                this.setValue()
             })
         }
 
@@ -92,6 +94,14 @@ const Masking = (() => {
                     this.disabledElement(input[index])
                 }
             }
+        }
+
+        setValue(){
+            let datavalue = ""
+            for(let input of this.el.querySelectorAll('.j-input-mask__item')){
+                datavalue += input.value
+            }
+            this.value = datavalue
         }
     }
 
