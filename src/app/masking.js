@@ -1,5 +1,6 @@
 const Masking = (() => {
     const clear = inp => inp.replace(/[a-z]|\W/gi, "")
+    const generateMaskPlaceholder = (lg, pattern="#") => new Array(lg).fill(pattern).join("")
 
     class MaskingClass {
         constructor(data){
@@ -38,6 +39,7 @@ const Masking = (() => {
                     let child = document.createElement('input')
                     child.setAttribute('class', `msj-input-mask__item input-mask-${i+1}--${this.rules[i]}`)
                     child.style.width = (this.rules[i]*10) + 30 + 'px'
+                    child.setAttribute('placeholder', generateMaskPlaceholder(this.rules[i]))
                     if(i > 0) this.disabledElement(child)
                     else this.enableElement(child)
                     this.el.appendChild(child)
