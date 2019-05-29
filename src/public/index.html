@@ -5,8 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Input mask</title>
+    <style>
+        body{
+            background-color: whitesmoke;
+            font-family: sans-serif;
+        }
+        .container{
+            margin: auto;
+            width: 90%;
+        }
+        h2{
+            text-align: center;
+            padding-top: 20px;
+        }
+        .input-mask-body{
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            min-height: 200px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <div id="mask"></div>
+    <div class="container center">
+        <h2>Input Mask</h2>
+        <div class="input-mask-body">
+            <div id="mask"></div>
+        </div>
+    </div>
 </body>
 </html>
