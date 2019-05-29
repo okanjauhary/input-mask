@@ -1,8 +1,12 @@
 .msj-input-mask{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
     .msj-input-mask__item{
-        display: inline-block;
-        width: 100px;
-        height: 50px;
+        box-sizing: border-box;
+        min-height: 50px;
+        width: 100%;
         border: 1px solid black;
         margin-right: 10px;
         font-size:20px;
