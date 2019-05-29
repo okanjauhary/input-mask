@@ -7,19 +7,40 @@ const Masking = (() => {
         },0)
         return (rule/total*100) + '%' 
     }
+    const enableElement = el => {
+        el.removeAttribute('disabled')
+        el.classList.add('input-mask--is-active')
+        el.classList.remove('input-mask--is-disabled')
+    }
+    const disabledElement = el => {
+        el.setAttribute('disabled', true)
+        el.classList.add('input-mask--is-disabled')
+        el.classList.remove('input-mask--is-active')
+    }
 
     class MaskingClass {
         constructor(data){
             this.selector = data.el
             this.rules = data.rules
             this.value = ""
-            this.initElement()
-            this.initChildElement()
+            this.options = data.options || {}
+            this.init()
+        }
+
+        async init(){
+            await Promise.all([
+                this.initElement(),
+                this.initChildElement()
+            ])
+            this.initOptions()
         }
     
         initElement(){
-            this.el = document.querySelector(this.selector)
-            this.el.classList.add("msj-input-mask")
+            return new Promise(resolve => {
+                this.el = document.querySelector(this.selector)
+                this.el.classList.add("msj-input-mask")
+                resolve(true)
+            })
         }
     
         async initChildElement(){
@@ -27,18 +48,6 @@ const Masking = (() => {
             this.listenEvent()
         }
 
-        disabledElement(el){
-            el.setAttribute('disabled', true)
-            el.classList.add('input-mask--is-disabled')
-            el.classList.remove('input-mask--is-active')
-        }
-
-        enableElement(el){
-            el.removeAttribute('disabled')
-            el.classList.add('input-mask--is-active')
-            el.classList.remove('input-mask--is-disabled')
-        }
-    
         initChildInput(){
             return new Promise(resolve => {
                 for(let i=0; i < this.rules.length; i++){
@@ -46,8 +55,8 @@ const Masking = (() => {
                     child.setAttribute('class', `msj-input-mask__item input-mask-${i+1}--${this.rules[i]}`)
                     child.style.width = widthPercentage(this.rules[i], this.rules)
                     child.setAttribute('placeholder', generateMaskPlaceholder(this.rules[i]))
-                    if(i > 0) this.disabledElement(child)
-                    else this.enableElement(child)
+                    if(i > 0) disabledElement(child)
+                    else enableElement(child)
                     this.el.appendChild(child)
                 }
                 resolve(true)
@@ -63,6 +72,21 @@ const Masking = (() => {
             }
         }
 
+        initOptions(){
+            if(this.options.classes){
+                if(typeof this.options.classes === 'string'){
+                    this.el.classList.add(this.options.classes)
+                }else{
+                    const inputs = this.el.querySelectorAll('input')
+                    const { parent, child } = this.options.classes
+                    if (parent) this.el.classList.add(parent)
+                    for(let input of inputs){
+                        if (child) input.classList.add(child)
+                    }
+                }
+            }
+        }
+
         whenKeyup(input, i){
             input[i].addEventListener('keyup', e => {
                 let val = clear(e.target.value)
@@ -72,7 +96,7 @@ const Masking = (() => {
                     if(/* checking length of value */ val.length > this.rules[i]){
                         e.target.value = val.slice(0, this.rules[i])
                         if(/* checking not last input */ i < input.length-1){
-                            this.enableElement(input[i+1])
+                            enableElement(input[i+1])
                             input[i+1].focus()
                             if(input[i+1].value.length < this.rules[i+1]){
                                 input[i+1].value += val.slice(-1)
@@ -100,7 +124,7 @@ const Masking = (() => {
             if(/* checking loping not first */index != 0){
                 if(/* checking length is empty */ !val.length){
                     input[index-1].focus()
-                    this.disabledElement(input[index])
+                    disabledElement(input[index])
                 }
             }
         }
