@@ -1,7 +1,7 @@
 import "babel-polyfill"
 import '../style/app.scss'
 import Masking from './masking'
-new Masking({
+const mask = new Masking({
     el: "#mask",
     rules: [3, 4, 2, 2],
     options: {
@@ -9,5 +9,9 @@ new Masking({
             parent: "custom-class",
             child: "custom-class-item"
         }
+    },
+    keyup(value){
+        console.log(value, "ini value")
     }
 })
+
