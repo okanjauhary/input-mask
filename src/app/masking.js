@@ -12,6 +12,22 @@ const Masking = (() => {
             return Number(__a) + Number(__c)
         },0)
     }
+    const checkingRuleTypes = rules => {
+        if(typeof rules == 'string'){
+            if(/* checking pattern (num+x+num) */ /^([1-9]+(x)[1-9]+)$/g.test(rules)){
+                let splitted = rules.toLowerCase().split('x')
+                const inputTotal = Number(splitted[0])
+                const maxLength = Number(splitted[1])
+                return new Array(inputTotal).fill(maxLength)
+            }else{
+                throw "Format Rules must number + 'x' + number and greater than 0"
+            }
+        }else if(Array.isArray(rules)){
+            return rules
+        }else{
+            throw "Format Rules must Array or String"
+        }
+    }
     const enableElement = el => {
         el.removeAttribute('disabled')
         el.classList.add('input-mask--is-active')
@@ -26,7 +42,7 @@ const Masking = (() => {
     class MaskingClass {
         constructor(data){
             this.selector = data.el
-            this.rules = data.rules
+            this.rules = checkingRuleTypes(data.rules)
             this.value = ""
             this.options = data.options || {}
             this.maxValue = countTotalRules(this.rules)
