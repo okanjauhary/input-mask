@@ -7,6 +7,11 @@ const Masking = (() => {
         },0)
         return (rule/total*100) + '%' 
     }
+    const countTotalRules = (rules) => {
+        return rules.reduce((__a, __c) => {
+            return Number(__a) + Number(__c)
+        },0)
+    }
     const enableElement = el => {
         el.removeAttribute('disabled')
         el.classList.add('input-mask--is-active')
@@ -24,15 +29,17 @@ const Masking = (() => {
             this.rules = data.rules
             this.value = ""
             this.options = data.options || {}
-            this.init()
+            this.maxValue = countTotalRules(this.rules)
+            this.init(data)
         }
 
-        async init(){
+        async init(data){
             await Promise.all([
                 this.initElement(),
                 this.initChildElement()
             ])
             this.initOptions()
+            this.keyup = data.keyup
         }
     
         initElement(){
@@ -52,7 +59,7 @@ const Masking = (() => {
             return new Promise(resolve => {
                 for(let i=0; i < this.rules.length; i++){
                     let child = document.createElement('input')
-                    child.setAttribute('class', `msj-input-mask__item input-mask-${i+1}--${this.rules[i]}`)
+                    child.setAttribute("class", "msj-input-mask__item")
                     child.style.width = widthPercentage(this.rules[i], this.rules)
                     child.setAttribute('placeholder', generateMaskPlaceholder(this.rules[i]))
                     if(i > 0) disabledElement(child)
@@ -94,7 +101,7 @@ const Masking = (() => {
                     this.whenDelete(input, val, i)
                 }else{
                     if(/* checking length of value */ val.length > this.rules[i]){
-                        e.target.value = val.slice(0, this.rules[i])
+                        input[i].value = val.slice(0, this.rules[i])
                         if(/* checking not last input */ i < input.length-1){
                             enableElement(input[i+1])
                             input[i+1].focus()
@@ -102,21 +109,27 @@ const Masking = (() => {
                                 input[i+1].value += val.slice(-1)
                             }
                         }
-                    }else e.target.value = val
+                    }else input[i].value = val
                 }
-                this.setValue()
+
+                /* check input keyup is trigger
+                 * if key is number and less than max value
+                 * if key is backspace and value is not null */
+                if((/^(\d)$/.test(e.key) && this.value.length < this.maxValue) || (e.keyCode == 8 && this.value)){
+                    this.setValue()
+                }
             })
         }
 
         whenFocus(input, i){
             input[i].addEventListener('focus', e => {
-                e.target.classList.add('input-mask--is-focused')
+                input[i].classList.add('input-mask--is-focused')
             })
         }
 
         whenBlur(input, i){
             input[i].addEventListener('blur', e => {
-                e.target.classList.remove('input-mask--is-focused')
+                input[i].classList.remove('input-mask--is-focused')
             })
         }
 
@@ -131,10 +144,13 @@ const Masking = (() => {
 
         setValue(){
             let datavalue = ""
-            for(let input of this.el.querySelectorAll('.j-input-mask__item')){
-                datavalue += input.value
+            for(let inp of this.el.querySelectorAll('.msj-input-mask__item')){
+                datavalue += inp.value
             }
             this.value = datavalue
+            setTimeout(() => {
+                this.keyup(this.value)
+            }, 0)
         }
     }
 
