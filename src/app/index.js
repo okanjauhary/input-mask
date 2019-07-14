@@ -6,6 +6,8 @@ const mask = new Masking({
     el: "#mask",
     rules: "5x3",
     options: {
+        autofocus: true,
+        align: "left", // "left" "right"
         classes: {
             parent: "custom-class",
             child: "custom-class-item"
