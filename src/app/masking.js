@@ -96,6 +96,7 @@ const Masking = (() => {
         }
 
         initOptions(){
+            // option classes
             if(this.options.classes){
                 if(typeof this.options.classes === 'string'){
                     this.el.classList.add(this.options.classes)
@@ -107,6 +108,23 @@ const Masking = (() => {
                         if (child) input.classList.add(child)
                     }
                 }
+            }
+
+            // option autofocus
+            if(this.options.autofocus){
+                this.el.querySelector('input').focus()
+            }
+
+            // option align
+            const align = this.options.align || "left"
+            if(align.constructor == String){
+                if(['left', 'center', 'right'].indexOf(align.toLowerCase()) !== -1){
+                    this.el.classList.add(`im-${align}`)
+                }else{ 
+                    throw "value of align is left, center or right"    
+                }
+            }else{
+                throw "Type of 'align' option must be a string"
             }
         }
 
