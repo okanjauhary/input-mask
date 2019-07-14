@@ -15,4 +15,13 @@
             margin-right: 10px;
         }
     }
+
+    // align for input
+    @each $align in left center right{
+        &.im-#{$align}{
+            .msj-input-mask__item{
+                text-align: $align;
+            }
+        }
+    }
 }
